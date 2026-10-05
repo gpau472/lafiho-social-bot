@@ -6,14 +6,19 @@ import os, json, sys
 from datetime import datetime, timezone, timedelta
 import requests
 
-GRAPH = "https://graph.facebook.com/v21.0"
-TOKEN, IG, PAGE = os.environ.get("PAGE_TOKEN", ""), os.environ.get("IG_USER_ID", ""), os.environ.get("PAGE_ID", "")
+FB_GRAPH = "https://graph.facebook.com/v21.0"
+if os.environ.get("IG_TOKEN"):
+    GRAPH, TOKEN = "https://graph.instagram.com/v21.0", os.environ["IG_TOKEN"]
+else:
+    GRAPH, TOKEN = FB_GRAPH, os.environ.get("PAGE_TOKEN", "")
+FB_TOKEN = os.environ.get("PAGE_TOKEN", "")
+IG, PAGE = os.environ.get("IG_USER_ID", ""), os.environ.get("PAGE_ID", "")
 DAYS = int(os.environ.get("DAYS", "14"))
 
 
-def get(path, **params):
-    params["access_token"] = TOKEN
-    r = requests.get(f"{GRAPH}/{path}", params=params, timeout=60)
+def get(path, fb=False, **params):
+    params["access_token"] = FB_TOKEN if fb else TOKEN
+    r = requests.get(f"{FB_GRAPH if fb else GRAPH}/{path}", params=params, timeout=60)
     d = r.json()
     if r.status_code >= 400 or "error" in d:
         return {"_error": d.get("error", d)}
@@ -40,7 +45,7 @@ def main():
             "guardados": vals.get("saved", 0), "compartidos": vals.get("shares", 0), "alcance": reach,
             "interacciones": inter, "tasa_interaccion": round(inter / reach, 4) if reach else None,
         })
-    fb = get(f"{PAGE}/posts", fields="message,created_time,reactions.summary(true),comments.summary(true),shares", limit=20) if PAGE else {}
+    fb = get(f"{PAGE}/posts", fb=True, fields="message,created_time,reactions.summary(true),comments.summary(true),shares", limit=20) if (PAGE and FB_TOKEN) else {}
     week = datetime.now(timezone.utc).strftime("%G-W%V")
     out = {"semana": week, "cuenta": acct, "publicaciones": rows, "facebook": fb.get("data", [])}
     os.makedirs("reports", exist_ok=True)

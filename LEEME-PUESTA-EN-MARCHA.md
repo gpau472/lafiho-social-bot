@@ -4,6 +4,24 @@ Publica en **Instagram y Facebook** lo que tú apruebes, a la hora programada, y
 Todo con herramientas gratuitas: API oficial de Meta + GitHub (repositorio y Actions) + mi producción local.
 **Nada se publica sin tu OK** (cada pieza tiene `"approved": false` hasta que tú me lo confirmes).
 
+## ▶ CAMINO A · SOLO INSTAGRAM (sin Facebook, sin página, sin tocar tu perfil personal)
+Usa la API oficial **con inicio de sesión de Instagram**. Secrets necesarios: `IG_TOKEN` y `IG_USER_ID` (nada de PAGE_*).
+
+1. **Instagram → cuenta profesional** (Empresa o Creador): app de Instagram → Configuración y actividad → Tipo de cuenta y herramientas → *Cambiar a cuenta profesional*.
+2. **Cuenta de desarrollador de Meta (gratis):** entra en developers.facebook.com con la sesión de Facebook que tengas abierta y acepta ser desarrollador.
+   *(Meta lo pide una vez. Si te exige una contraseña que no recuerdas, este es el único punto de bloqueo: dímelo y vemos la alternativa.)*
+3. **Crear app:** *Mis apps → Crear app* → tipo **Empresa**. Dentro, añade el producto **Instagram** → *API con inicio de sesión de Instagram*.
+4. **Añadirte como probador:** en la app → *Roles de la app → Roles* → **Probadores de Instagram** → añade tu usuario de Instagram. Luego, en Instagram (web) → *Configuración → Apps y sitios web → Invitaciones de probador* → **Aceptar**.
+5. **Token:** en la app → Instagram → *Configuración de la API con inicio de sesión de Instagram* → **Generar token** junto a tu cuenta → cópialo (no lo compartas).
+6. **Tu ID:** `IG_TOKEN=xxxx python3 get_ig_id.py` → imprime `IG_USER_ID`.
+7. **GitHub → Settings → Secrets and variables → Actions → New repository secret:** crea **IG_TOKEN** e **IG_USER_ID**.
+8. **Caduca a los 60 días:** repite los pasos 5-7 cada ~50 días (te aviso en el informe del sábado).
+9. **Prueba segura:** una publicación de prueba aprobada por ti; se publica y la borras.
+
+> Los pasos del *Camino B* de abajo (Facebook + página) quedan para más adelante, cuando recuperes ese acceso.
+
+---
+
 ## Piezas
 | Archivo | Para qué |
 |---|---|

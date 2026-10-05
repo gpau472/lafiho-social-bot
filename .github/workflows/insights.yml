@@ -15,6 +15,7 @@ jobs:
       - run: pip install requests
       - name: Informe
         env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
           PAGE_TOKEN: ${{ secrets.PAGE_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           PAGE_ID: ${{ secrets.PAGE_ID }}

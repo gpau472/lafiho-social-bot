@@ -4,15 +4,24 @@
 Uso:
   python publisher.py            # publica lo vencido y aprobado
   python publisher.py --dry-run  # solo muestra qué haría (no llama a la API)
-Variables de entorno (secrets de GitHub): PAGE_TOKEN, IG_USER_ID, PAGE_ID
+Variables de entorno (secrets de GitHub):
+  Instagram (API con inicio de sesión de Instagram):  IG_TOKEN, IG_USER_ID
+  Facebook (opcional, más adelante):                  PAGE_TOKEN, PAGE_ID
 """
 import os, sys, json, glob, time, mimetypes
 from datetime import datetime, timezone
 import requests
 
-GRAPH = "https://graph.facebook.com/v21.0"
 DRY = "--dry-run" in sys.argv
-TOKEN = os.environ.get("PAGE_TOKEN", "")
+FB_GRAPH = "https://graph.facebook.com/v21.0"
+# Si hay IG_TOKEN se usa la API de Instagram con inicio de sesión de Instagram (no necesita página de Facebook)
+if os.environ.get("IG_TOKEN"):
+    GRAPH = "https://graph.instagram.com/v21.0"
+    TOKEN = os.environ["IG_TOKEN"]
+else:
+    GRAPH = FB_GRAPH
+    TOKEN = os.environ.get("PAGE_TOKEN", "")
+FB_TOKEN = os.environ.get("PAGE_TOKEN", "")
 IG = os.environ.get("IG_USER_ID", "")
 PAGE = os.environ.get("PAGE_ID", "")
 REPO = os.environ.get("GITHUB_REPOSITORY", "USUARIO/REPO")
@@ -101,13 +110,13 @@ def post_instagram(item):
 def post_facebook(item):
     t, files, cap = item["type"], item["files"], item.get("caption", "")
     if t == "post":
-        return call("POST", f"{GRAPH}/{PAGE}/photos", data={"url": raw(files[0]), "caption": cap, "access_token": TOKEN})
+        return call("POST", f"{FB_GRAPH}/{PAGE}/photos", data={"url": raw(files[0]), "caption": cap, "access_token": FB_TOKEN})
     if t == "carousel":
-        ids = [call("POST", f"{GRAPH}/{PAGE}/photos", data={"url": raw(f), "published": "false", "access_token": TOKEN})["id"] for f in files]
+        ids = [call("POST", f"{FB_GRAPH}/{PAGE}/photos", data={"url": raw(f), "published": "false", "access_token": FB_TOKEN})["id"] for f in files]
         att = {f"attached_media[{i}]": json.dumps({"media_fbid": x}) for i, x in enumerate(ids)}
-        return call("POST", f"{GRAPH}/{PAGE}/feed", data={"message": cap, "access_token": TOKEN, **att})
+        return call("POST", f"{FB_GRAPH}/{PAGE}/feed", data={"message": cap, "access_token": FB_TOKEN, **att})
     if t == "reel":
-        return call("POST", f"{GRAPH}/{PAGE}/videos", data={"file_url": raw(files[0]), "description": cap, "access_token": TOKEN})
+        return call("POST", f"{FB_GRAPH}/{PAGE}/videos", data={"file_url": raw(files[0]), "description": cap, "access_token": FB_TOKEN})
     print("   (las historias no se replican en Facebook automáticamente)")
     return {"id": "skipped"}
 
@@ -137,7 +146,9 @@ def main():
             try:
                 if "instagram" in it.get("platforms", ["instagram"]):
                     res["instagram"] = post_instagram(it).get("id")
-                if "facebook" in it.get("platforms", ["facebook"]):
+                if "facebook" in it.get("platforms", []):
+                    if not (PAGE and FB_TOKEN):
+                        raise RuntimeError("Facebook no está configurado (faltan PAGE_ID / PAGE_TOKEN)")
                     res["facebook"] = post_facebook(it).get("id")
                 it["status"], it["results"], it["published_at"] = "published", res, now.isoformat()
                 it.pop("error", None)
