@@ -1,0 +1,67 @@
+{
+  "week": "2026-W42",
+  "nota": "EJEMPLO. Pon approved:true solo cuando el usuario haya dado el OK. Las horas llevan zona horaria de España (+02:00 verano / +01:00 invierno).",
+  "items": [
+    {
+      "id": "lun-post-mito",
+      "type": "post",
+      "when": "2026-10-12T19:00:00+02:00",
+      "approved": false,
+      "status": "pending",
+      "platforms": [
+        "instagram",
+        "facebook"
+      ],
+      "files": [
+        "media/2026-W42/post-3-mito-vs-realidad.png"
+      ],
+      "caption": "¿Con un solo empleado no hace falta registrar la jornada? 🤔\n\nPues sí. Desde 2019 es obligatorio para todas las empresas con personas contratadas (RDL 8/2019).\n\nCon LAFIHO lo cumples sin complicarte → lafiho.com\n\n#registrohorario #controlhorario #pymes #lafiho"
+    },
+    {
+      "id": "mar-carrusel-faq",
+      "type": "carousel",
+      "when": "2026-10-13T19:00:00+02:00",
+      "approved": false,
+      "status": "pending",
+      "platforms": [
+        "instagram",
+        "facebook"
+      ],
+      "files": [
+        "media/2026-W42/faq-00.png",
+        "media/2026-W42/faq-01.png"
+      ],
+      "caption": "Tus dudas sobre el registro horario, resueltas ✅ ..."
+    },
+    {
+      "id": "mie-reel-pov",
+      "type": "reel",
+      "when": "2026-10-14T19:00:00+02:00",
+      "approved": false,
+      "status": "pending",
+      "platforms": [
+        "instagram",
+        "facebook"
+      ],
+      "files": [
+        "media/2026-W42/reel-pov-jefe.mp4"
+      ],
+      "caption": "POV: eres el jefe ... #registrohorario #lafiho"
+    },
+    {
+      "id": "mie-historia-quiz",
+      "type": "story",
+      "when": "2026-10-14T12:00:00+02:00",
+      "approved": false,
+      "status": "pending",
+      "manual": true,
+      "nota": "lleva pegatina de encuesta: súbela a mano",
+      "platforms": [
+        "instagram"
+      ],
+      "files": [
+        "media/2026-W42/story-quiz.mp4"
+      ]
+    }
+  ]
+}

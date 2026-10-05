@@ -1,0 +1,27 @@
+name: Informe semanal
+on:
+  schedule:
+    - cron: "0 7 * * 6"   # sábados 07:00 UTC (09:00 hora de verano en España)
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - name: Informe
+        env:
+          PAGE_TOKEN: ${{ secrets.PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          PAGE_ID: ${{ secrets.PAGE_ID }}
+        run: python insights.py
+      - name: Guardar informe
+        run: |
+          git config user.name "lafiho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add reports
+          git diff --cached --quiet || (git commit -m "informe semanal" && git push)
