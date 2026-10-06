@@ -1,8 +1,6 @@
 name: Publicar lo aprobado
 on:
-  schedule:
-    - cron: "*/15 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: {}   # pausado: la publicación se hace con Metricool. Se ejecuta solo a mano.
 permissions:
   contents: write
 concurrency:
@@ -27,5 +25,5 @@ jobs:
         run: |
           git config user.name "lafiho-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add schedule
+          git add -A schedule 2>/dev/null || true
           git diff --cached --quiet || (git commit -m "estado de publicaciones" && git push)
